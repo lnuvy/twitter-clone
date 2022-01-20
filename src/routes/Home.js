@@ -1,3 +1,4 @@
+import Tweet from "components/Tweet";
 import { dbService } from "fbase";
 import {
   addDoc,
@@ -81,9 +82,11 @@ const Home = ({ userObj }) => {
       </form>
       <div>
         {tweets.map((t) => (
-          <div key={t.id}>
-            <h4>{t.text}</h4>
-          </div>
+          <Tweet
+            key={t.id}
+            tweetObj={t}
+            isOwner={t.creatorId === userObj.uid}
+          />
         ))}
       </div>
     </div>
