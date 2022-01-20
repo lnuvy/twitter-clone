@@ -1,11 +1,24 @@
+import { dbService } from "fbase";
+import { deleteDoc, doc, updateDoc } from "firebase/firestore";
 import React from "react";
 
 const Tweet = ({ tweetObj, isOwner }) => {
-  const onDeleteClick = () => {
-    // eslint-disable-next-line no-restricted-globals
-    const ok = confirm("Are you sure want to delete?");
+  const onClick = async (event) => {
+    const target = event.target.innerText;
+    console.log(target);
+
+    const ok = window.confirm(`Are you sure want to ${target}?`);
     if (ok) {
-      // delete
+      const TweetRef = doc(dbService, `tweets/${tweetObj.id}`);
+      if (target.includes("Delete")) {
+        console.log(`delete`);
+        await deleteDoc(TweetRef);
+      } else if (target.includes("Edit")) {
+        console.log(`Edit`);
+        await updateDoc(TweetRef);
+      }
+    } else {
+      return;
     }
   };
   return (
@@ -13,8 +26,8 @@ const Tweet = ({ tweetObj, isOwner }) => {
       <h4>{tweetObj.text}</h4>
       {isOwner && (
         <>
-          <button onClick={onDeleteClick}>Delete Tweet</button>
-          <button>Edit Tweet</button>
+          <button onClick={onClick}>Delete Tweet</button>
+          <button onClick={onClick}>Edit Tweet</button>
         </>
       )}
     </div>
