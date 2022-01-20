@@ -51,17 +51,13 @@ const Auth = () => {
     const {
       target: { name },
     } = event;
-    let provider, data;
+    let provider;
     if (name === "google") {
       provider = new GoogleAuthProvider();
-
-      signInWithPopup(authService, provider).then((result) => {
-        data = result;
-      });
     } else if (name === "github") {
       provider = new GithubAuthProvider();
     }
-    console.log(data);
+    await signInWithPopup(authService, provider);
   };
 
   return (
