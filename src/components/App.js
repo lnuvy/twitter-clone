@@ -17,7 +17,12 @@ function App() {
     });
   }, []);
 
-  return <AppRouter isLoggedIn={isLoggedIn} />;
+  return (
+    <>
+      <AppRouter isLoggedIn={isLoggedIn} />
+      <footer>&copyright</footer>
+    </>
+  );
 }
 
 export default App;
