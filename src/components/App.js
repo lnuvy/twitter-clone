@@ -6,20 +6,23 @@ import { onAuthStateChanged } from "firebase/auth";
 function App() {
   const [init, setInit] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [userObj, setUserObj] = useState(null);
+
   useEffect(() => {
     onAuthStateChanged(authService, (user) => {
       if (user) {
         setIsLoggedIn(true);
-        setInit(true);
+        setUserObj(user);
       } else {
         setIsLoggedIn(false);
       }
+      setInit(true);
     });
   }, []);
 
   return (
     <>
-      <AppRouter isLoggedIn={isLoggedIn} />
+      <AppRouter isLoggedIn={isLoggedIn} userObj={userObj} />
       <footer>&copyright</footer>
     </>
   );
