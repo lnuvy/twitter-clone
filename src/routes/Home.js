@@ -5,6 +5,7 @@ import {
   getDocs,
   getFirestore,
   onSnapshot,
+  orderBy,
   query,
 } from "firebase/firestore";
 import React, { useEffect, useState } from "react";
@@ -28,7 +29,8 @@ const Home = ({ userObj }) => {
   useEffect(() => {
     // getTweets();
     const q = query(
-      collection(getFirestore(), "tweets")
+      collection(getFirestore(), "tweets"),
+      orderBy("createdAt", "desc")
       // 두번째 인자로 조건을 넣으면 됨
     );
     const unsubscribe = onSnapshot(q, (querySnapshot) => {
