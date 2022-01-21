@@ -1,5 +1,5 @@
 import Tweet from "components/Tweet";
-import { dbService } from "fbase";
+import { dbService, storageService } from "fbase";
 import {
   addDoc,
   collection,
@@ -9,12 +9,14 @@ import {
   orderBy,
   query,
 } from "firebase/firestore";
+import { getDownloadURL, ref, uploadString } from "firebase/storage";
 import React, { useEffect, useRef, useState } from "react";
+import { v4 } from "uuid";
 
 const Home = ({ userObj }) => {
   const [tweet, setTweet] = useState("");
   const [tweets, setTweets] = useState([]);
-  const [attachment, setAttachment] = useState(null);
+  const [attachment, setAttachment] = useState("");
 
   const fileInput = useRef();
 
@@ -45,7 +47,7 @@ const Home = ({ userObj }) => {
         };
       });
       setTweets(tweetArray);
-      // console.log(`Current tweets in CA: `, tweetArray);
+      console.log(`Current tweets in CA: `, tweetArray);
     });
     return () => {
       unsubscribe();
@@ -53,11 +55,21 @@ const Home = ({ userObj }) => {
   }, []);
   const onSubmit = async (event) => {
     event.preventDefault();
+    let attachmentUrl = "";
+
+    if (attachment !== "") {
+      const fileRef = ref(storageService, `${userObj.uid}/${v4()}`);
+      const response = await uploadString(fileRef, attachment, "data_url");
+      console.log(response);
+      attachmentUrl = await getDownloadURL(fileRef);
+    }
+
     try {
       const docRef = await addDoc(collection(dbService, "tweets"), {
         text: tweet,
         createdAt: Date.now(),
         creatorId: userObj.uid,
+        attachmentUrl,
       });
       setTweet(docRef);
     } catch (error) {
@@ -90,7 +102,7 @@ const Home = ({ userObj }) => {
 
   const onClearPhoto = () => {
     fileInput.current.value = null;
-    setAttachment(null);
+    setAttachment("");
   };
 
   return (
