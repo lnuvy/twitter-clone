@@ -1,10 +1,11 @@
 import { authService } from "fbase";
+import { signOut } from "firebase/auth";
 import React from "react";
 import { Link } from "react-router-dom";
 
 const Profile = () => {
   const onLogOutClick = () => {
-    authService.signOut();
+    signOut(authService);
   };
 
   return (
