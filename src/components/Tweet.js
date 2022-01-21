@@ -1,5 +1,6 @@
-import { dbService } from "fbase";
+import { dbService, storageService } from "fbase";
 import { deleteDoc, doc, updateDoc } from "firebase/firestore";
+import { deleteObject, ref } from "firebase/storage";
 import React, { useState } from "react";
 
 const Tweet = ({ tweetObj, isOwner }) => {
@@ -12,6 +13,10 @@ const Tweet = ({ tweetObj, isOwner }) => {
     if (ok) {
       const TweetRef = doc(dbService, `tweets/${tweetObj.id}`);
       await deleteDoc(TweetRef);
+      if (tweetObj.attachmentUrl !== "") {
+        const urlRef = ref(storageService, tweetObj.attachmentUrl);
+        await deleteObject(urlRef);
+      }
     }
   };
 

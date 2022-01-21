@@ -130,6 +130,9 @@ const Home = ({ userObj }) => {
         )}
       </form>
       <div>
+        <br />
+        <hr />
+        <br />
         {tweets.map((t) => (
           <Tweet
             key={t.id}
