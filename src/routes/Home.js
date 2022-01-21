@@ -9,11 +9,14 @@ import {
   orderBy,
   query,
 } from "firebase/firestore";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 
 const Home = ({ userObj }) => {
   const [tweet, setTweet] = useState("");
   const [tweets, setTweets] = useState([]);
+  const [attachment, setAttachment] = useState(null);
+
+  const fileInput = useRef();
 
   // const getTweets = async () => {
   //   const q = query(collection(dbService, "tweets"));
@@ -68,6 +71,28 @@ const Home = ({ userObj }) => {
     } = event;
     setTweet(value);
   };
+
+  const onFileChange = (event) => {
+    const {
+      target: { files },
+    } = event;
+    const thisFile = files[0];
+    const reader = new FileReader();
+    reader.onloadend = (finishedEvent) => {
+      console.log(finishedEvent);
+      const {
+        target: { result },
+      } = finishedEvent;
+      setAttachment(result);
+    };
+    reader.readAsDataURL(thisFile);
+  };
+
+  const onClearPhoto = () => {
+    fileInput.current.value = null;
+    setAttachment(null);
+  };
+
   return (
     <div>
       <form onSubmit={onSubmit}>
@@ -78,7 +103,19 @@ const Home = ({ userObj }) => {
           placeholder="What's on your mind?"
           maxLength={120}
         />
+        <input
+          type="file"
+          accept="image/*"
+          onChange={onFileChange}
+          ref={fileInput}
+        />
         <input type="submit" value="tweet" />
+        {attachment && (
+          <div>
+            <img src={attachment} width="50px" heigth="40px" alt="upload" />
+            <button onClick={onClearPhoto}>Clear</button>
+          </div>
+        )}
       </form>
       <div>
         {tweets.map((t) => (
