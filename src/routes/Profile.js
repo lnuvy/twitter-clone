@@ -14,8 +14,8 @@ const Profile = ({ userObj, refreshUser }) => {
   const getMyTweets = async () => {
     const q = query(
       collection(dbService, "tweets"),
-      where("creatorId", "==", userObj.uid)
-      // orderBy("createdAt")
+      where("creatorId", "==", userObj.uid),
+      orderBy("createdAt")
     );
     const querySnapshot = await getDocs(q);
     // querySnapshot.forEach((test) => console.log(test.data()));
