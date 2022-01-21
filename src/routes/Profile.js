@@ -1,6 +1,6 @@
 import { authService, dbService } from "fbase";
 import { signOut } from "firebase/auth";
-import { collection, doc, getDocs, query, where } from "firebase/firestore";
+import { collection, getDocs, orderBy, query, where } from "firebase/firestore";
 import React from "react";
 import { Link } from "react-router-dom";
 
@@ -13,9 +13,11 @@ const Profile = ({ userObj }) => {
     const q = query(
       collection(dbService, "tweets"),
       where("creatorId", "==", userObj.uid)
+      // orderBy("createdAt")
     );
     const querySnapshot = await getDocs(q);
-    querySnapshot.forEach((test) => console.log(test.data()));
+    // querySnapshot.forEach((test) => console.log(test.data()));
+    querySnapshot.docs.map((doc) => console.log(doc.data()));
   };
 
   return (
