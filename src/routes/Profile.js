@@ -1,10 +1,12 @@
 import { authService, dbService } from "fbase";
-import { signOut } from "firebase/auth";
+import { signOut, updateProfile } from "firebase/auth";
 import { collection, getDocs, orderBy, query, where } from "firebase/firestore";
-import React from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
 
-const Profile = ({ userObj }) => {
+const Profile = ({ userObj, refreshUser }) => {
+  const [newDisplayName, setNewDisplayName] = useState(userObj.displayName);
+
   const onLogOutClick = () => {
     signOut(authService);
   };
@@ -20,8 +22,34 @@ const Profile = ({ userObj }) => {
     querySnapshot.docs.map((doc) => console.log(doc.data()));
   };
 
+  const onChange = (event) => {
+    const {
+      target: { value },
+    } = event;
+    setNewDisplayName(value);
+  };
+
+  const onSubmit = async (event) => {
+    event.preventDefault();
+    if (userObj.displayName !== newDisplayName) {
+      await updateProfile(await authService.currentUser, {
+        displayName: newDisplayName,
+      });
+    }
+    refreshUser();
+  };
+
   return (
     <>
+      <form onSubmit={onSubmit}>
+        <input
+          type="text"
+          onChange={onChange}
+          value={newDisplayName}
+          placeholder="Display name..."
+        />
+        <input type="submit" value="Update Profile" />
+      </form>
       <Link to="/">
         <button onClick={onLogOutClick}>Log Out</button>
       </Link>
