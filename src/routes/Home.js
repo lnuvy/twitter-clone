@@ -42,7 +42,7 @@ const Home = ({ userObj }) => {
         };
       });
       setTweets(tweetArray);
-      console.log(`Current tweets in CA: `, tweetArray);
+      // console.log(`Current tweets in CA: `, tweetArray);
     });
     return () => {
       unsubscribe();

@@ -6,37 +6,32 @@ const Tweet = ({ tweetObj, isOwner }) => {
   const [editing, setEditing] = useState(false);
   const [newTweet, setNewTweet] = useState(tweetObj.text);
 
-  const onClick = async (event) => {
+  const onDelete = async (event) => {
     const target = event.target.innerText;
-    console.log(target);
-
     const ok = window.confirm(`Are you sure want to ${target}?`);
     if (ok) {
       const TweetRef = doc(dbService, `tweets/${tweetObj.id}`);
-      if (target.includes("Delete")) {
-        console.log(`delete`);
-        await deleteDoc(TweetRef);
-      } else if (target.includes("Edit")) {
-        console.log(`Edit`);
-        // await updateDoc(TweetRef);
-      }
-    } else {
-      return;
+      await deleteDoc(TweetRef);
     }
   };
 
   const toggleEditing = () => setEditing((prev) => !prev);
-
-  const onSubmit = (event) => {
-    event.preventDefault();
-    console.log(tweetObj, newTweet);
-  };
 
   const onChange = (event) => {
     const {
       target: { value },
     } = event;
     setNewTweet(value);
+  };
+
+  const onSubmit = async (event) => {
+    event.preventDefault();
+    // console.log(tweetObj, newTweet);
+    const TweetRef = doc(dbService, `tweets/${tweetObj.id}`);
+    await updateDoc(TweetRef, {
+      text: newTweet,
+    });
+    toggleEditing();
   };
 
   return (
@@ -60,7 +55,7 @@ const Tweet = ({ tweetObj, isOwner }) => {
           <h4>{tweetObj.text}</h4>
           {isOwner && (
             <>
-              <button onClick={onClick}>Delete Tweet</button>
+              <button onClick={onDelete}>Delete Tweet</button>
               <button onClick={toggleEditing}>Edit Tweet</button>
             </>
           )}
